@@ -7,6 +7,7 @@ function fetchData() {
     xdr.onload = function() {
       handleData(JSON.parse(xdr.responseText));
     };
+    xdr.send();
   }
   else {
     var req = new XMLHttpRequest();
