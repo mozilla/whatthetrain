@@ -17,10 +17,10 @@ function handleData(data) {
 }
 
 function appendVersionInfo(branch, version) {
-  var p = document.createElement("p");
   branch = branch[0].toUpperCase() + branch.slice(1);
-  p.innerHTML = "<h2>The current " + branch + " version is " + version + "</h2>";
-  document.body.appendChild(p);
+  var h2 = document.createElement("h2");
+  h2.textContent = "The current " + branch + " version is " + version;
+  document.body.appendChild(h2);
 }
 
 document.addEventListener("DOMContentLoaded", fetchData, false);
