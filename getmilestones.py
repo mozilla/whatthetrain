@@ -27,5 +27,5 @@ def main(output):
     write_json(versions, open(output, "w"))
 
 if __name__ == '__main__':
-    main(sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(__file__), "branch_versions.json"))
+    main(len(sys.argv) > 1 and sys.argv[1] or os.path.join(os.path.dirname(__file__), "branch_versions.json"))
 
