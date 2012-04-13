@@ -1,12 +1,24 @@
+var URL = "http://people.mozilla.com/~tmielczarek/branch_versions.json";
+
 function fetchData() {
-  var req = new XMLHttpRequest();
-  req.onreadystatechange = function(ev) {
-    if (req.readyState == 4 && req.status == 200) {
-      handleData(JSON.parse(req.responseText));
-    }
-  };
-  req.open("GET", "http://people.mozilla.com/~tmielczarek/branch_versions.json", true);
-  req.send(null);
+  if (window.XDomainRequest) {
+    var xdr = new XDomainRequest();
+    xdr.open("GET", url);
+    xdr.onload = function() {
+      handleData(JSON.parse(xdr.responseText));
+    };
+  }
+  else {
+    var req = new XMLHttpRequest();
+    req.onreadystatechange = function(ev) {
+      if (req.readyState == 4 && req.status == 200) {
+        handleData(JSON.parse(req.responseText));
+      }
+    };
+    req.open("GET", URL, true);
+    req.send(null);  
+  }
+
 }
 
 function handleData(data) {
