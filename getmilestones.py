@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import sys, urllib, json, re, os.path
+import sys, urllib, re, os.path
 
 URL = "http://hg.mozilla.org/%s/raw-file/tip/config/milestone.txt"
 BRANCHES = {"nightly": "mozilla-central",
