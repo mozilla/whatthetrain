@@ -3,7 +3,7 @@ var URL = "http://people.mozilla.com/~tmielczarek/branch_versions.json";
 function fetchData() {
   if (window.XDomainRequest) {
     var xdr = new XDomainRequest();
-    xdr.open("GET", url);
+    xdr.open("GET", URL);
     xdr.onload = function() {
       handleData(JSON.parse(xdr.responseText));
     };
