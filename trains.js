@@ -17,7 +17,7 @@ function fetchData() {
       }
     };
     req.open("GET", URL, true);
-    req.send(null);  
+    req.send(null);
   }
 
 }
@@ -32,6 +32,8 @@ function handleData(data) {
 function appendVersionInfo(branch, version) {
   branch = branch[0].toUpperCase() + branch.slice(1);
   var h2 = document.createElement("h2");
+  h2.id = branch;
+  h2.className = "version";
   h2.textContent = "The current " + branch + " version is " + version;
   document.body.appendChild(h2);
 }

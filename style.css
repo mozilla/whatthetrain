@@ -1,0 +1,48 @@
+html {
+  border-top: 2px solid #fff;
+}
+
+body {
+  margin-top: 0;
+  font: 16px/24px Georgia, serif;
+  background: rgb(245,241,232) url('images/background-gradient.png') repeat-x top center;
+}
+
+.huge, .large, h1, h2, h3, h4 {font-family: 'OpenSans', "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", Verdana, sans-serif; font-weight: normal; text-shadow: 0px 1px 0px rgba(255,255,255,0.75);}
+
+.huge {font-size: 108px; letter-spacing: -4px; line-height: 100%;}
+.large {font-size: 72px; letter-spacing: -3px; line-height: 100%;}
+h1 {font-size: 48px; letter-spacing: -2px; line-height: 100%;}
+h2 {font-size: 32px; letter-spacing: -1px; line-height: 100%;}
+h3 {font-size: 28px; letter-spacing: -0.5px; line-height: 100%;}
+h4 {font-size: 24px; letter-spacing: -0.25px; line-height: 100%;}
+.small, small { font-size: 12px; line-height: 100%;}
+
+h1 {
+  text-align: center;
+}
+
+.version {
+  background-repeat: no-repeat;
+  padding-left: 80px;
+  height: 80px;
+  line-height: 80px;
+  display: block;
+  background-size: 80px 80px;
+}
+
+#Release {
+  background-image: url('images/release.png');
+}
+
+#Beta {
+  background-image: url('images/beta.png');
+}
+
+#Aurora {
+  background-image: url('images/aurora.png');
+}
+
+#Nightly {
+  background-image: url('images/nightly.png');
+}
