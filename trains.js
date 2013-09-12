@@ -1,4 +1,4 @@
-var URL = "http://people.mozilla.com/~tmielczarek/branch_versions.json";
+var URL = "http://people.mozilla.org/~tmielczarek/branch_versions.json";
 
 function fetchData() {
   if (window.XDomainRequest) {
