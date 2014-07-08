@@ -46,3 +46,15 @@ h1 {
 #nightly {
   background-image: url('images/nightly.png');
 }
+
+#uplift {
+  /* Taken from http://findicons.com/icon/177414/clock_blue */
+  background-image: url('images/clock_blue.png');
+  background-repeat: no-repeat;
+  padding-left: 64px;
+  margin-left: 16px;
+  height: 48px;
+  line-height: 48px;
+  display: block;
+  background-size: 48px 48px;
+}

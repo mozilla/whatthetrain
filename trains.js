@@ -57,11 +57,26 @@ function makeHeader(branch) {
   document.body.appendChild(h2);
 }
 
+function calculateNextUplift() {
+  // This is where the release calendar (ICS) starts:
+  // https://mail.mozilla.com/home/publiccalendar@mozilla.com/Releases%20Scheduling.html?view=month&action=view&invId=41c66ea8-7d47-4eb5-9a41-252e092ddbe9%3a16570-803759&pstat=AC&instStartTime=1405897200000&instDuration=86400000&useInstance=0
+  var d = new Date("2014-02-03T17:00:00.000Z");
+  var now = new Date();
+  while (d.getTime() < now.getTime()) {
+    d.setDate(d.getDate() + 6*7);
+  }
+  return d.toDateString();
+}
+
 function init() {
   for (var i = 0; i < BRANCHES.length; i++) {
     var branch = BRANCHES[i];
     makeHeader(branch[0]);
   }
+  var h3 = document.createElement("h3");
+  h3.id = "uplift";
+  h3.textContent = "The next uplift is " + calculateNextUplift();
+  document.body.appendChild(h3);
 }
 
 document.addEventListener("DOMContentLoaded", init, false);
