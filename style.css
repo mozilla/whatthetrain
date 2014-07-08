@@ -31,18 +31,18 @@ h1 {
   background-size: 80px 80px;
 }
 
-#Release {
+#release {
   background-image: url('images/release.png');
 }
 
-#Beta {
+#beta {
   background-image: url('images/beta.png');
 }
 
-#Aurora {
+#aurora {
   background-image: url('images/aurora.png');
 }
 
-#Nightly {
+#nightly {
   background-image: url('images/nightly.png');
 }

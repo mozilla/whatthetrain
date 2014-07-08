@@ -1,11 +1,28 @@
-var URL = "http://people.mozilla.org/~tmielczarek/branch_versions.json";
+var URL = ["http://hg.mozilla.org/", "/raw-file/tip/config/milestone.txt"];
+var BRANCHES = [
+  ["release", "releases/mozilla-release"],
+  ["beta", "releases/mozilla-beta"],
+  ["aurora", "releases/mozilla-aurora"],
+  ["nightly", "mozilla-central"]
+];
 
-function fetchData() {
+var versions = {};
+
+function getVersion(responseText) {
+  var bits = responseText.split("\n").reverse();
+  var v = bits.filter(function(x) {
+    return x != '';
+  })[0];
+  return v.replace(/[ab]\d+$/, '');
+}
+
+function fetchData(branch, repo) {
+  var url = URL[0] + repo + URL[1];
   if (window.XDomainRequest) {
     var xdr = new XDomainRequest();
-    xdr.open("GET", URL);
+    xdr.open("GET", url);
     xdr.onload = function() {
-      handleData(JSON.parse(xdr.responseText));
+      appendVersionInfo(branch, getVersion(xdr.responseText));
     };
     xdr.send();
   }
@@ -13,29 +30,43 @@ function fetchData() {
     var req = new XMLHttpRequest();
     req.onreadystatechange = function(ev) {
       if (req.readyState == 4 && req.status == 200) {
-        handleData(JSON.parse(req.responseText));
+        appendVersionInfo(branch, getVersion(req.responseText));
       }
     };
-    req.open("GET", URL, true);
+    req.open("GET", url, true);
     req.send(null);
   }
-
 }
 
-function handleData(data) {
-  var branches = ["release", "beta", "aurora", "nightly"];
-  for (var i = 0; i < branches.length; i++) {
-    appendVersionInfo(branches[i], data[branches[i]]);
-  }
-}
-
-function appendVersionInfo(branch, version) {
+function appendVersionInfo(branch, version, h2) {
+  versions[branch] = version;
+  h2 = h2 || document.getElementById(branch);
+  if (!h2)
+    return;
   branch = branch[0].toUpperCase() + branch.slice(1);
+  h2.textContent = "The current " + branch + " version is " + version;
+}
+
+function makeHeader(branch) {
   var h2 = document.createElement("h2");
   h2.id = branch;
   h2.className = "version";
-  h2.textContent = "The current " + branch + " version is " + version;
+  if (branch in versions) {
+    appendVersionInfo(branch, versions[branch], h2);
+  }
   document.body.appendChild(h2);
 }
 
-document.addEventListener("DOMContentLoaded", fetchData, false);
+function init() {
+  for (var i = 0; i < BRANCHES.length; i++) {
+    var branch = BRANCHES[i];
+    makeHeader(branch[0]);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", init, false);
+// Start requests before the page finishes loading.
+for (var i = 0; i < BRANCHES.length; i++) {
+  var branch = BRANCHES[i];
+  fetchData(branch[0], branch[1]);
+}
