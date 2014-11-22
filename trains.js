@@ -2,7 +2,7 @@ var URL = ["http://hg.mozilla.org/", "/raw-file/tip/config/milestone.txt"];
 var BRANCHES = [
   ["release", "releases/mozilla-release"],
   ["beta", "releases/mozilla-beta"],
-  ["aurora", "releases/mozilla-aurora"],
+  ["developer", "releases/mozilla-aurora", "Developer Edition (Aurora)"],
   ["nightly", "mozilla-central"]
 ];
 
@@ -16,13 +16,13 @@ function getVersion(responseText) {
   return v.replace(/[ab]\d+$/, '');
 }
 
-function fetchData(branch, repo) {
+function fetchData(branch, repo, description) {
   var url = URL[0] + repo + URL[1];
   if (window.XDomainRequest) {
     var xdr = new XDomainRequest();
     xdr.open("GET", url);
     xdr.onload = function() {
-      appendVersionInfo(branch, getVersion(xdr.responseText));
+      appendVersionInfo(branch, getVersion(xdr.responseText), description);
     };
     xdr.send();
   }
@@ -30,7 +30,7 @@ function fetchData(branch, repo) {
     var req = new XMLHttpRequest();
     req.onreadystatechange = function(ev) {
       if (req.readyState == 4 && req.status == 200) {
-        appendVersionInfo(branch, getVersion(req.responseText));
+        appendVersionInfo(branch, getVersion(req.responseText), description);
       }
     };
     req.open("GET", url, true);
@@ -38,21 +38,21 @@ function fetchData(branch, repo) {
   }
 }
 
-function appendVersionInfo(branch, version, h2) {
+function appendVersionInfo(branch, version, description, h2) {
   versions[branch] = version;
   h2 = h2 || document.getElementById(branch);
   if (!h2)
     return;
-  branch = branch[0].toUpperCase() + branch.slice(1);
+  branch = description || branch[0].toUpperCase() + branch.slice(1);
   h2.textContent = "The current " + branch + " version is " + version;
 }
 
-function makeHeader(branch) {
+function makeHeader(branch, description) {
   var h2 = document.createElement("h2");
   h2.id = branch;
   h2.className = "version";
   if (branch in versions) {
-    appendVersionInfo(branch, versions[branch], h2);
+    appendVersionInfo(branch, versions[branch], description, h2);
   }
   document.body.appendChild(h2);
 }
@@ -71,7 +71,7 @@ function calculateNextUplift() {
 function init() {
   for (var i = 0; i < BRANCHES.length; i++) {
     var branch = BRANCHES[i];
-    makeHeader(branch[0]);
+    makeHeader(branch[0], branch[2]);
   }
   var h3 = document.createElement("h3");
   h3.id = "uplift";
@@ -83,5 +83,5 @@ document.addEventListener("DOMContentLoaded", init, false);
 // Start requests before the page finishes loading.
 for (var i = 0; i < BRANCHES.length; i++) {
   var branch = BRANCHES[i];
-  fetchData(branch[0], branch[1]);
+  fetchData(branch[0], branch[1], branch[2]);
 }
