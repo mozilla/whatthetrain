@@ -65,10 +65,14 @@ function init() {
   }
 }
 
-function setNextUplift(date) {
+function setNextUplift(date, link) {
   var h3 = document.createElement("h3");
   h3.id = "uplift";
-  h3.textContent = "The next uplift is " + date;
+  h3.textContent = "The next uplift is ";
+  var a = document.createElement("a");
+  a.textContent = date;
+  a.href = link;
+  h3.appendChild(a);
   document.body.appendChild(h3);
 }
 
@@ -91,7 +95,7 @@ function loadCalendar() {
           now.getTime() < then.getTime()) {
         // TODO: could format the date better, also
         // would be nice to do relative dates like "today" or "tomorrow".
-        setNextUplift(r.items[i].start.date);
+        setNextUplift(r.items[i].start.date, r.items[i].htmlLink);
         break;
       }
     }
