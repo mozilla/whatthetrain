@@ -1,3 +1,4 @@
+/*global gapi,XDomainRequest */
 var URL = ["//hg.mozilla.org/", "/raw-file/tip/config/milestone.txt"];
 var BRANCHES = [
   ["release", "releases/mozilla-release"],
@@ -57,26 +58,49 @@ function makeHeader(branch, description) {
   document.body.appendChild(h2);
 }
 
-function calculateNextUplift() {
-  // This is where the release calendar (ICS) starts:
-  // https://mail.mozilla.com/home/publiccalendar@mozilla.com/Releases%20Scheduling.html?view=month&action=view&invId=41c66ea8-7d47-4eb5-9a41-252e092ddbe9%3a16570-803759&pstat=AC&instStartTime=1405897200000&instDuration=86400000&useInstance=0
-  var d = new Date("2014-02-03T17:00:00.000Z");
-  var now = new Date();
-  while (d.getTime() < now.getTime()) {
-    d.setDate(d.getDate() + 6*7);
-  }
-  return d.toDateString();
-}
-
 function init() {
   for (var i = 0; i < BRANCHES.length; i++) {
     var branch = BRANCHES[i];
     makeHeader(branch[0], branch[2]);
   }
+}
+
+function setNextUplift(date) {
   var h3 = document.createElement("h3");
   h3.id = "uplift";
-  h3.textContent = "The next uplift is " + calculateNextUplift();
+  h3.textContent = "The next uplift is " + date;
   document.body.appendChild(h3);
+}
+
+function loadCalendar() {
+  var request = gapi.client.calendar.events.list({
+    calendarId: "mozilla.com_u92lbs8k7tj4a9j4qc231ov3co@group.calendar.google.com",
+    singleEvents: true,
+    orderBy: "startTime",
+    q: "MERGE"
+    //"timeMin": "xxx"
+  });
+  request.execute(function (r) {
+    var now = new Date();
+    for (var i=0; i < r.items.length; i++) {
+      var item = r.items[i];
+      // This doesn't handle dateTime or timeZone, but these calendar
+      // events are all just dates currently.
+      var then = new Date(r.items[i].start.date);
+      if (item.summary.substr(0, 6) == "MERGE:" &&
+          now.getTime() < then.getTime()) {
+        // TODO: could format the date better, also
+        // would be nice to do relative dates like "today" or "tomorrow".
+        setNextUplift(r.items[i].start.date);
+        break;
+      }
+    }
+  });
+}
+
+function gapi_init() {
+   gapi.client.setApiKey("AIzaSyCfLN9nQUWw4_GM1BHAx2S-laAOvDwvMg4");
+   gapi.client.load("calendar", "v3").then(loadCalendar);
 }
 
 document.addEventListener("DOMContentLoaded", init, false);

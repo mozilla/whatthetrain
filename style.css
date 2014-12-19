@@ -58,3 +58,7 @@ h1 {
   display: block;
   background-size: 48px 48px;
 }
+
+.right-bottom .github-fork-ribbon {
+  background-color: #333;
+}
