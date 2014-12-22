@@ -6,6 +6,7 @@ var BRANCHES = [
   ["developer", "releases/mozilla-aurora", "Developer Edition (Aurora)"],
   ["nightly", "mozilla-central"]
 ];
+var RELEASE_CALENDAR = "mozilla.com_2d37383433353432352d3939@resource.calendar.google.com";
 
 var versions = {};
 
@@ -78,7 +79,7 @@ function setNextUplift(date, link) {
 
 function loadCalendar() {
   var request = gapi.client.calendar.events.list({
-    calendarId: "mozilla.com_u92lbs8k7tj4a9j4qc231ov3co@group.calendar.google.com",
+    calendarId: RELEASE_CALENDAR,
     singleEvents: true,
     orderBy: "startTime",
     q: "MERGE"
