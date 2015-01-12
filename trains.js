@@ -89,15 +89,23 @@ function loadCalendar() {
     var now = new Date();
     for (var i=0; i < r.items.length; i++) {
       var item = r.items[i];
-      // This doesn't handle dateTime or timeZone, but these calendar
-      // events are all just dates currently.
-      var then = new Date(r.items[i].start.date);
-      if (item.summary.substr(0, 6) == "MERGE:" &&
-          now.getTime() < then.getTime()) {
-        // TODO: could format the date better, also
-        // would be nice to do relative dates like "today" or "tomorrow".
-        setNextUplift(r.items[i].start.date, r.items[i].htmlLink);
-        break;
+      if (item.summary.substr(0, 6) == "MERGE:") {
+        // This doesn't handle dateTime or timeZone, but these calendar
+        // events are all just dates currently.
+        // This is terrible, but hey, datetime math.
+        var then = new Date(r.items[i].start.date + "T09:00:00.000");
+        console.log(r.items[i].start.date);
+        if (now.getTime() < then.getTime()) {
+          // TODO: could format the date better, also
+          // would be nice to do relative dates like "today" or "tomorrow".
+          setNextUplift(r.items[i].start.date, r.items[i].htmlLink);
+          break;
+        } else if (now.getFullYear() == then.getFullYear() &&
+                   now.getMonth() == then.getMonth() &&
+                   now.getDate() == then.getDate()) {
+          setNextUplift("TODAY!", r.items[i].htmlLink);
+          break;
+        }
       }
     }
   });
