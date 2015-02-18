@@ -53,9 +53,11 @@ function makeHeader(branch, description) {
   var h2 = document.createElement("h2");
   h2.id = branch;
   h2.className = "version";
+  var span = document.createElement("span");
   if (branch in versions) {
-    appendVersionInfo(branch, versions[branch], description, h2);
+    appendVersionInfo(branch, versions[branch], description, span);
   }
+  h2.appendChild(span);
   document.body.appendChild(h2);
 }
 
@@ -67,14 +69,16 @@ function init() {
 }
 
 function setNextUplift(date, link) {
-  var h3 = document.createElement("h3");
-  h3.id = "uplift";
-  h3.textContent = "The next uplift is ";
+  var h2 = document.createElement("h2");
+  h2.id = "uplift";
+  var span = document.createElement("span");
+  span.textContent = "The next uplift is ";
   var a = document.createElement("a");
   a.textContent = date;
   a.href = link;
-  h3.appendChild(a);
-  document.body.appendChild(h3);
+  span.appendChild(a);
+  h2.appendChild(span);
+  document.body.appendChild(h2);
 }
 
 function loadCalendar() {
