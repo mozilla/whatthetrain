@@ -1,5 +1,5 @@
 /*global gapi,XDomainRequest */
-var URL = ["https://hg.mozilla.org/", "/raw-file/tip/config/milestone.txt"];
+var URL = ["https://hg.mozilla.org/", "/raw-file/default/config/milestone.txt"];
 var BRANCHES = [
   ["release", "releases/mozilla-release"],
   ["beta", "releases/mozilla-beta"],
