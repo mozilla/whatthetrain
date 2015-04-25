@@ -40,8 +40,28 @@ function fetchData(branch, repo, description) {
   }
 }
 
+function fixupReleaseVersion(release_version, beta_version) {
+  if (release_version != beta_version) {
+    return release_version;
+  }
+  // They shouldn't be the same, this must be uplift week.
+  return (parseInt(release_version) - 1) + ".0";
+}
+
 function appendVersionInfo(branch, version, description, h2) {
   versions[branch] = version;
+  if (branch == "release") {
+    // See if we're in that funky week between release uplift and release.
+    if (!versions.beta) {
+      // get it later...
+      return;
+    }
+    versions.release = version = fixupReleaseVersion(version, versions.beta);
+  } else if (branch == "beta") {
+    if (versions.release && versions.release == versions.beta) {
+      appendVersionInfo("release", versions.release);
+    }
+  }
   h2 = h2 || document.getElementById(branch);
   if (!h2)
     return;
