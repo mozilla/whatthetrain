@@ -49,6 +49,7 @@ function fixupReleaseVersion(release_version, beta_version) {
 }
 
 function appendVersionInfo(branch, version, description, h2) {
+  console.log("appendVersionInfo(%s, %s, %s)", branch, version, description);
   versions[branch] = version;
   if (branch == "release") {
     // See if we're in that funky week between release uplift and release.
@@ -58,7 +59,8 @@ function appendVersionInfo(branch, version, description, h2) {
     }
     versions.release = version = fixupReleaseVersion(version, versions.beta);
   } else if (branch == "beta") {
-    if (versions.release && versions.release == versions.beta) {
+    if (versions.release) {
+      // Now is later.
       appendVersionInfo("release", versions.release);
     }
   }
