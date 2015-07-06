@@ -68,7 +68,7 @@ function appendVersionInfo(branch, version, description, h2) {
   if (!h2)
     return;
   branch = description || branch[0].toUpperCase() + branch.slice(1);
-  h2.textContent = "The current " + branch + " version is " + version;
+  h2.textContent = branch + " − " + version;
 }
 
 function makeHeader(branch, description) {
@@ -80,7 +80,7 @@ function makeHeader(branch, description) {
     appendVersionInfo(branch, versions[branch], description, span);
   }
   h2.appendChild(span);
-  document.body.appendChild(h2);
+  document.getElementById("flex-container").appendChild(h2);
 }
 
 function init() {
@@ -94,7 +94,7 @@ function setNextUplift(date, link) {
   var h2 = document.createElement("h2");
   h2.id = "uplift";
   var span = document.createElement("span");
-  span.textContent = "The next uplift is ";
+  span.textContent = "Next uplift: ";
   var a = document.createElement("a");
   a.textContent = date;
   a.href = link;
