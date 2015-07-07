@@ -68,18 +68,21 @@ function appendVersionInfo(branch, version, description, h2) {
   if (!h2)
     return;
   branch = description || branch[0].toUpperCase() + branch.slice(1);
-  h2.textContent = branch + " − " + version;
+  var div_branch = document.createElement("div");
+  var div_version = document.createElement("div");
+  div_branch.textContent = branch;
+  div_version.textContent = version;
+  h2.appendChild(div_version);
+  h2.appendChild(div_branch);
 }
 
 function makeHeader(branch, description) {
   var h2 = document.createElement("h2");
   h2.id = branch;
   h2.className = "version";
-  var span = document.createElement("span");
-  if (branch in versions) {
-    appendVersionInfo(branch, versions[branch], description, span);
-  }
-  h2.appendChild(span);
+ if (branch in versions) {
+   appendVersionInfo(branch, versions[branch], description, h2);
+ }
   document.getElementById("flex-container").appendChild(h2);
 }
 

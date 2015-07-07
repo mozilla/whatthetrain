@@ -18,12 +18,20 @@ h1 {
   clear: both;
 }
 
+h2 div:first-of-type {
+  font-size: xx-large;
+}
+
+h2 div:last-of-type {
+  font-size: large;
+}
+
 #flex-container {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
-  -webkit-justify-content: center;
+  flex-flow: row wrap;
   justify-content: center;
 }
 
@@ -32,7 +40,8 @@ h1 {
   background-position: top center;
   padding-top: 151px; /* Branch logos height */
   text-align: center;
-  width: 25vw;
+  width: 24vw;
+  min-width: 160px; /* Branch logo width */
 }
 
 #release {
