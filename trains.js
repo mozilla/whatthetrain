@@ -101,6 +101,7 @@ function setNextUplift(date, link) {
   var a = document.createElement("a");
   a.textContent = date;
   a.href = link;
+  a.title = "Google calendar event";
   span.appendChild(a);
   h2.appendChild(span);
   document.body.appendChild(h2);

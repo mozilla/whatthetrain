@@ -68,6 +68,10 @@ h2 div:last-of-type {
   text-align: center;
 }
 
+#uplift a {
+  color: inherit;
+}
+
 .right-bottom .github-fork-ribbon {
   background-color: #333;
 }
