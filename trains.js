@@ -1,30 +1,26 @@
 /*global gapi,XDomainRequest */
-var URL = ["https://hg.mozilla.org/", "/raw-file/default/config/milestone.txt"];
+var URL = "https://product-details.mozilla.org/1.0/firefox_versions.json";
 var BRANCHES = [
-  ["release", "releases/mozilla-release"],
-  ["beta", "releases/mozilla-beta"],
-  ["developer", "releases/mozilla-aurora", "Developer Edition (Aurora)"],
-  ["nightly", "mozilla-central"]
+  ["release", "LATEST_FIREFOX_VERSION"],
+  ["beta", "LATEST_FIREFOX_DEVEL_VERSION"],
+  ["developer", "FIREFOX_AURORA", "Developer Edition (Aurora)"],
+  ["nightly", "FIREFOX_NIGHTLY"]
 ];
 var RELEASE_CALENDAR = "mozilla.com_2d37383433353432352d3939@resource.calendar.google.com";
 
 var versions = {};
 
-function getVersion(responseText) {
-  var bits = responseText.split("\n").reverse();
-  var v = bits.filter(function(x) {
-    return x != '';
-  })[0];
-  return v.replace(/[ab]\d+$/, '');
+function getVersion(responseText, keyJSON) {
+  contentJSON = JSON.parse(responseText);
+  return contentJSON[keyJSON].replace(/[ab]\d+$/, '');
 }
 
-function fetchData(branch, repo, description) {
-  var url = URL[0] + repo + URL[1];
+function fetchData(branch, keyJSON, description) {
   if (window.XDomainRequest) {
     var xdr = new XDomainRequest();
-    xdr.open("GET", url);
+    xdr.open("GET", URL);
     xdr.onload = function() {
-      appendVersionInfo(branch, getVersion(xdr.responseText), description);
+      appendVersionInfo(branch, getVersion(xdr.responseText, keyJSON), description);
     };
     xdr.send();
   }
@@ -32,10 +28,10 @@ function fetchData(branch, repo, description) {
     var req = new XMLHttpRequest();
     req.onreadystatechange = function(ev) {
       if (req.readyState == 4 && req.status == 200) {
-        appendVersionInfo(branch, getVersion(req.responseText), description);
+        appendVersionInfo(branch, getVersion(req.responseText, keyJSON), description);
       }
     };
-    req.open("GET", url, true);
+    req.open("GET", URL, true);
     req.send(null);
   }
 }
