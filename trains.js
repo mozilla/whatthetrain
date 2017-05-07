@@ -3,7 +3,6 @@ var URL = "https://product-details.mozilla.org/1.0/firefox_versions.json";
 var BRANCHES = [
   ["release", "LATEST_FIREFOX_VERSION"],
   ["beta", "LATEST_FIREFOX_DEVEL_VERSION"],
-  ["developer", "FIREFOX_AURORA", "Developer Edition (Aurora)"],
   ["nightly", "FIREFOX_NIGHTLY"],
   ["esr", "FIREFOX_ESR", "ESR"],
   ["esr_next", "FIREFOX_ESR_NEXT", "Next ESR"],
