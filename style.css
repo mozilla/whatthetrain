@@ -48,6 +48,14 @@ h2 div:last-of-type {
   background-image: url('images/release.png');
 }
 
+#esr {
+  background-image: url('images/release.png');
+}
+
+#esr_next {
+  background-image: url('images/release.png');
+}
+
 #beta {
   background-image: url('images/beta.png');
 }
