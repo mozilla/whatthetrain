@@ -1,5 +1,7 @@
 /*global gapi,XDomainRequest */
 var URL = "https://product-details.mozilla.org/1.0/firefox_versions.json";
+// To store the JSON content
+var jsonContent = {};
 var BRANCHES = [
   ["release", "LATEST_FIREFOX_VERSION"],
   ["beta", "LATEST_FIREFOX_DEVEL_VERSION"],
@@ -11,17 +13,22 @@ var RELEASE_CALENDAR = "mozilla.com_2d37383433353432352d3939@resource.calendar.g
 
 var versions = {};
 
-function getVersion(responseText, keyJSON) {
-  contentJSON = JSON.parse(responseText);
-  return contentJSON[keyJSON].replace(/[ab]\d+$/, '').replace(/esr$/, '');
+function getVersion(jsonContent, keyJSON) {
+  return jsonContent[keyJSON].replace(/[ab]\d+$/, '').replace(/esr$/, '');
 }
 
-function fetchData(branch, keyJSON, description) {
+function fetchData(jsonContent, branch, keyJSON, description) {
+  if (Object.keys(jsonContent).length > 0 && jsonContent.constructor === Object) {
+    // No need to download the json file again.
+    appendVersionInfo(branch, getVersion(jsonContent, keyJSON), description);
+  }
+
   if (window.XDomainRequest) {
     var xdr = new XDomainRequest();
     xdr.open("GET", URL);
     xdr.onload = function() {
-      appendVersionInfo(branch, getVersion(xdr.responseText, keyJSON), description);
+      jsonContent = JSON.parse(xdr.responseText);
+      appendVersionInfo(branch, getVersion(jsonContent, keyJSON), description);
     };
     xdr.send();
   }
@@ -29,7 +36,8 @@ function fetchData(branch, keyJSON, description) {
     var req = new XMLHttpRequest();
     req.onreadystatechange = function(ev) {
       if (req.readyState == 4 && req.status == 200) {
-        appendVersionInfo(branch, getVersion(req.responseText, keyJSON), description);
+        jsonContent = JSON.parse(req.responseText);
+        appendVersionInfo(branch, getVersion(jsonContent, keyJSON), description);
       }
     };
     req.open("GET", URL, true);
@@ -154,10 +162,9 @@ function gapi_init() {
    gapi.client.setApiKey("AIzaSyCfLN9nQUWw4_GM1BHAx2S-laAOvDwvMg4");
    gapi.client.load("calendar", "v3").then(loadCalendar);
 }
-
 document.addEventListener("DOMContentLoaded", init, false);
 // Start requests before the page finishes loading.
 for (var i = 0; i < BRANCHES.length; i++) {
   var branch = BRANCHES[i];
-  fetchData(branch[0], branch[1], branch[2]);
+  fetchData(jsonContent, branch[0], branch[1], branch[2]);
 }
