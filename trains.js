@@ -17,18 +17,22 @@ function getVersion(jsonContent, keyJSON) {
   return jsonContent[keyJSON].replace(/[ab]\d+$/, '').replace(/esr$/, '');
 }
 
-function fetchData(jsonContent, branch, keyJSON, description) {
-  if (Object.keys(jsonContent).length > 0 && jsonContent.constructor === Object) {
-    // No need to download the json file again.
-    appendVersionInfo(branch, getVersion(jsonContent, keyJSON), description);
+function populateVersionInfo(jsonContent) {
+  for (var i = 0; i < BRANCHES.length; i++) {
+    var branch = BRANCHES[i][0];
+    var key = BRANCHES[i][1];
+    var description = BRANCHES[i][2];
+    appendVersionInfo(branch, getVersion(jsonContent, key), description);
   }
+}
 
+function fetchData() {
   if (window.XDomainRequest) {
     var xdr = new XDomainRequest();
     xdr.open("GET", URL);
     xdr.onload = function() {
       jsonContent = JSON.parse(xdr.responseText);
-      appendVersionInfo(branch, getVersion(jsonContent, keyJSON), description);
+      populateVersionInfo(jsonContent);
     };
     xdr.send();
   }
@@ -37,7 +41,7 @@ function fetchData(jsonContent, branch, keyJSON, description) {
     req.onreadystatechange = function(ev) {
       if (req.readyState == 4 && req.status == 200) {
         jsonContent = JSON.parse(req.responseText);
-        appendVersionInfo(branch, getVersion(jsonContent, keyJSON), description);
+        populateVersionInfo(jsonContent);
       }
     };
     req.open("GET", URL, true);
@@ -66,19 +70,6 @@ function appendVersionInfo(branch, version, description, h2) {
     }
   }
   versions[branch] = version;
-  if (branch == "release") {
-    // See if we're in that funky week between release uplift and release.
-    if (!versions.beta) {
-      // get it later...
-      return;
-    }
-    versions.release = version = fixupReleaseVersion(version, versions.beta);
-  } else if (branch == "beta") {
-    if (versions.release) {
-      // Now is later.
-      appendVersionInfo("release", versions.release);
-    }
-  }
   h2 = h2 || document.getElementById(branch);
   if (!h2)
     return;
@@ -134,6 +125,10 @@ function loadCalendar() {
   });
   request.execute(function (r) {
     var now = new Date();
+    if (!r.items) {
+      console.warn('Got no Google calendar data!');
+      return;
+    }
     for (var i=0; i < r.items.length; i++) {
       var item = r.items[i];
       if (item.summary.substr(0, 6) == "MERGE:") {
@@ -163,8 +158,5 @@ function gapi_init() {
    gapi.client.load("calendar", "v3").then(loadCalendar);
 }
 document.addEventListener("DOMContentLoaded", init, false);
-// Start requests before the page finishes loading.
-for (var i = 0; i < BRANCHES.length; i++) {
-  var branch = BRANCHES[i];
-  fetchData(jsonContent, branch[0], branch[1], branch[2]);
-}
+// Start fetching data before the page finishes loading.
+fetchData();
