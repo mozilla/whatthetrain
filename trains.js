@@ -105,7 +105,7 @@ function setNextUplift(date, link) {
   var h2 = document.createElement("h2");
   h2.id = "uplift";
   var span = document.createElement("span");
-  span.textContent = "Next uplift: ";
+  span.textContent = "Next merge day: ";
   var a = document.createElement("a");
   a.textContent = date;
   a.href = link;
