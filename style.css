@@ -38,6 +38,7 @@ h2 div:last-of-type {
 .version {
   background-repeat: no-repeat;
   background-position: top center;
+  background-size: 120px;
   padding-top: 151px; /* Branch logos height */
   text-align: center;
   width: 19vw;
