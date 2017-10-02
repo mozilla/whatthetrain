@@ -1,4 +1,4 @@
-/*global gapi,XDomainRequest */
+/*global gapi,XDomainRequest,moment */
 var URL = "https://product-details.mozilla.org/1.0/firefox_versions.json";
 // To store the JSON content
 var jsonContent = {};
@@ -124,7 +124,7 @@ function loadCalendar() {
     //"timeMin": "xxx"
   });
   request.execute(function (r) {
-    var now = new Date();
+    var now = moment();
     if (!r.items) {
       console.warn('Got no Google calendar data!');
       return;
@@ -135,16 +135,14 @@ function loadCalendar() {
         // This doesn't handle dateTime or timeZone, but these calendar
         // events are all just dates currently.
         // This is terrible, but hey, datetime math.
-        var then = new Date(r.items[i].start.date + "T09:00:00.000");
+        var then = moment(r.items[i].start.date + "T09:00:00.000");
         console.log(r.items[i].start.date);
-        if (now.getTime() < then.getTime()) {
+        if (now.isBefore(then)) {
           // TODO: could format the date better, also
           // would be nice to do relative dates like "today" or "tomorrow".
           setNextUplift(r.items[i].start.date, r.items[i].htmlLink);
           break;
-        } else if (now.getFullYear() == then.getFullYear() &&
-                   now.getMonth() == then.getMonth() &&
-                   now.getDate() == then.getDate()) {
+        } else if (now.isSame(then, 'day')) {
           setNextUplift("TODAY!", r.items[i].htmlLink);
           break;
         }
