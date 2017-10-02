@@ -101,7 +101,7 @@ function init() {
   }
 }
 
-function setNextUplift(date, link) {
+function setNextUplift(date, link, when) {
   var h2 = document.createElement("h2");
   h2.id = "uplift";
   var span = document.createElement("span");
@@ -112,6 +112,9 @@ function setNextUplift(date, link) {
   a.title = "Google calendar event";
   span.appendChild(a);
   h2.appendChild(span);
+  var s2 = document.createElement("span");
+  s2.textContent = " (" + when + ")";
+  h2.appendChild(s2);
   document.body.appendChild(h2);
 }
 
@@ -134,16 +137,13 @@ function loadCalendar() {
       if (item.summary.substr(0, 6) == "MERGE:") {
         // This doesn't handle dateTime or timeZone, but these calendar
         // events are all just dates currently.
-        // This is terrible, but hey, datetime math.
-        var then = moment(r.items[i].start.date + "T09:00:00.000");
+        var then = moment.tz(r.items[i].start.date, "YYYY-MM-DD", "America/Los_Angeles");
         console.log(r.items[i].start.date);
         if (now.isBefore(then)) {
-          // TODO: could format the date better, also
-          // would be nice to do relative dates like "today" or "tomorrow".
-          setNextUplift(r.items[i].start.date, r.items[i].htmlLink);
+          setNextUplift(r.items[i].start.date, r.items[i].htmlLink, then.fromNow());
           break;
-        } else if (now.isSame(then, 'day')) {
-          setNextUplift("TODAY!", r.items[i].htmlLink);
+        } else if (now.isSame(then, "day")) {
+          setNextUplift(r.items[i].start.date, r.items[i].htmlLink, "TODAY!");
           break;
         }
       }
