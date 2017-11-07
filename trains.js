@@ -75,7 +75,9 @@ function appendVersionInfo(branch, version, description, h2) {
     return;
   branch = description || branch[0].toUpperCase() + branch.slice(1);
   var div_branch = document.createElement("div");
+  div_branch.classList.add('branch');
   var div_version = document.createElement("div");
+  div_version.classList.add('vernum');
   div_branch.textContent = branch;
   div_version.textContent = version;
   h2.appendChild(div_version);
@@ -98,6 +100,10 @@ function init() {
   for (var i = 0; i < BRANCHES.length - 1; i++) {
     var branch = BRANCHES[i];
     makeHeader(branch[0], branch[2]);
+  }
+
+  if (window.location.search === '?tv') {
+    document.querySelector('.github-fork-ribbon-wrapper').style.display = 'none';
   }
 }
 
