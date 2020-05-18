@@ -141,15 +141,25 @@ function loadCalendar() {
     for (var i=0; i < r.items.length; i++) {
       var item = r.items[i];
       if (item.summary.substr(0, 6) == "MERGE:") {
-        // This doesn't handle dateTime or timeZone, but these calendar
-        // events are all just dates currently.
-        var then = moment.tz(r.items[i].start.date, "YYYY-MM-DD", "America/Los_Angeles");
-        console.log(r.items[i].start.date);
+        var then;
+        var date;
+        if (item.start.date === undefined) {
+          // recent all day events show up with a start/end time 24 hours apart
+          // in some time zone that depends on who schedules them; parse using a
+          // tz to the east of all likely users so we get the right day
+          // instead of the day before
+          then = moment.tz(item.start.dateTime, "Europe/Paris");
+          date = then.format("YYYY-MM-DD");
+        } else {
+          then = moment.tz(item.start.date, "YYYY-MM-DD", "America/Los_Angeles");
+          date = item.start.date;
+        }
+        console.log(date, item.summary);
         if (now.isBefore(then)) {
-          setNextUplift(r.items[i].start.date, r.items[i].htmlLink, then.fromNow());
+          setNextUplift(date, item.htmlLink, then.fromNow());
           break;
         } else if (now.isSame(then, "day")) {
-          setNextUplift(r.items[i].start.date, r.items[i].htmlLink, "TODAY!");
+          setNextUplift(date, item.htmlLink, "TODAY!");
           break;
         }
       }
